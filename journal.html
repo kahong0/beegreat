@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journals</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <script src="https://kit.fontawesome.com/5ebc9e2055.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Journal Selection Menu -->
+    <div id="journal-menu">
+        <h1>My Journals</h1>
+        <div class="journal-list">
+            <div class="journal" onclick="openJournal(1)">Journal 1</div>
+            <div class="journal" onclick="openJournal(2)">Journal 2</div>
+            <div class="journal" onclick="openJournal(3)">Journal 3</div>
+        </div>
+    </div>
+
+    <!-- Journal Content (Initially Hidden) -->
+    <div id="journal-container" class="hidden">
+        <button id="back-btn"><i class="fas fa-arrow-left" onclick="homePage()"></i> Back</button>
+        <div class="journal-content">
+            <h2 id="journal-title">Journal Title</h2>
+            <p id="journal-text">Journal content will appear here.</p>
+        </div>
+    </div>
+
+</body>
+<script>
+     function homePage() {
+    window.location.href = 'BeeGreatV2.2.html';
+    //window.location.href = 'home2.html';  // Redirect to camera.html page
+  }
+</script>
+</html>

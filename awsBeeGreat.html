@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeeGreat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #F3EAD6;
+        }
+        
+        input, textarea {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            color: #000000;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #999999;
+        }
+
+        input:focus::placeholder, textarea:focus::placeholder {
+            color: transparent;
+        }
+
+        button {
+            width: 50%;
+            padding: 10px;
+            background: #171715;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #333333;
+        }
+
+        .banner { 
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            background-color: rgba(224, 162, 121, 0.263);
+            margin: 0 auto;
+            text-align: center;
+            height: 70px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+            padding-top: 10px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 2fr 2fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 10px;
+            padding: 50px;
+            max-width: 90%;
+            margin: 0 auto;
+            max-height: 70%;
+        }
+
+        .startPad{
+            margin-bottom: 100px;
+        }
+
+        .upload-section {
+            margin-top: 20px;
+        }
+
+        #upload-status {
+            margin-top: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-container">
+        <header>
+            <h2>Login</h2>
+            <div class="wrapper">
+                <input id="login-email" placeholder="Email" required="" type="email">
+                <input id="login-password" placeholder="Password" required="" type="password">
+            </div>
+            <div class="wrapper">
+                <button onclick="login()">Login</button>
+            </div>
+            <p>Don't have an account? <a href="#" onclick="toggleForms()">Sign Up</a></p>
+        </header>
+    </div>
+
+    <div class="hidden" id="homepage-container">
+        <div class="banner">
+            <div class="bannerContent">
+                <h1>Welcome, <span id="user-name"></span>!</h1>
+            </div>
+        </div>
+
+        <div class="startPad">
+            <div class="container">
+                <!-- Image Upload Section -->
+                <div class="upload-section">
+                    <h3>Upload an Image</h3>
+                    <input type="file" id="file-upload">
+                    <button onclick="uploadImage()">Upload Image</button>
+                    <div id="upload-status"></div>
+                </div>
+
+                <!-- Other Sections -->
+                <div class="discussion">
+                    <h3>Discussion</h3>
+                    <p>Placeholder for discussion content.</p>
+                </div>
+
+                <div class="camera">
+                    <h3>Camera</h3>
+                    <p>Placeholder for camera feed or controls.</p>
+                </div>
+
+                <div class="resources">
+                    <h3>Resources</h3>
+                    <p>Placeholder for resources content.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1562.0.min.js"></script>
+    <script>
+        AWS.config.update({
+            region: "us-east-1",
+            credentials: new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: "us-east-1:7bf2ba29-22ab-416e-8248-e02ff2b5501f" // Replace with actual ID
+            })
+        });
+
+        var s3 = new AWS.S3();
+        var bucketName = "my-beegreat-buckets";
+
+        function uploadImage() {
+            let fileInput = document.getElementById("file-upload");
+            let file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            let fileName = "uploads/" + Date.now() + "_" + file.name;
+            let params = {
+                Bucket: bucketName,
+                Key: fileName,
+                Body: file,
+                ContentType: file.type
+            };
+
+            document.getElementById("upload-status").innerText = "Uploading...";
+
+            AWS.config.credentials.get(function() {
+                var accessKeyId = AWS.config.credentials.accessKeyId;
+                var secretAccessKey = AWS.config.credentials.secretAccessKey;
+                var sessionToken = AWS.config.credentials.sessionToken;
+
+                s3.putObject(params, function (err, data) {
+                    if (err) {
+                        console.log(err);
+                        document.getElementById("upload-status").innerText = "Upload failed!";
+                    } else {
+                        console.log("Successfully uploaded data to " + bucketName + "/" + fileName);
+                        document.getElementById("upload-status").innerText = "Uploaded! Extracting text...";
+                        triggerTextract(fileName);
+                    }
+                });
+            });
+        }
+
+        function triggerTextract(fileName) {
+            let outputFileUrl = `https://${bucketName}.s3.amazonaws.com/output/${fileName.replace(/\.(jpg|png)$/, ".txt")}`;
+
+            let checkInterval = setInterval(() => {
+                fetch(outputFileUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            clearInterval(checkInterval);
+                            return response.text();
+                        }
+                        throw new Error("File not ready");
+                    })
+                    .then(refinedText => {
+                        document.getElementById("extracted-text").innerText = refinedText;
+                        document.getElementById("upload-status").innerText = "Text extracted!";
+                    })
+                    .catch(error => console.log("Waiting for file:", error));
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

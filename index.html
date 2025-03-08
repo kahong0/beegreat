@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home / Explore</title>
+    <link rel="stylesheet" href="look.css">
+    <script src="script.js" defer></script>
+    <script src="https://kit.fontawesome.com/5ebc9e2055.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>🐝Bee Chatty</h2>
+        <ul>
+            <li onclick="showHome()"><i class="fas fa-home"></i> Home</li>
+            <li onclick="showExplore()"><i class="fas fa-hashtag"></i> Explore</li>
+            <li onclick="showHome()">Go to Home Page</li>
+        </ul>
+    </div>
+
+    <!-- Home Page -->
+    <div class="main-content" id="home-page">
+        <h1>Home</h1>
+
+        <!-- New Post Box -->
+        <div class="new-post">
+            <textarea id="postContent" placeholder="What's happening?"></textarea>
+            <button onclick="addPost()">Tweet</button>
+        </div>
+
+        <!-- Posts Feed -->
+        <div id="posts-container">
+            <!-- User-generated posts will appear here -->
+        </div>
+    </div>
+
+    <!-- Explore Page (Initially Hidden) -->
+    <div class="main-content hidden" id="explore-page">
+        <h1>Explore</h1>
+        <button id="generate-ai-btn" onclick="generateAIMessages()">Click for Support!</button>
+        <div id="ai-messages-container">
+            <!-- AI-generated supportive tweets will appear here -->
+        </div>
+    </div>
+
+</body>
+</html>

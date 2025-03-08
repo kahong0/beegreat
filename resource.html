@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Page</title>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #F3EAD6;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .resource-btn {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            background-color: #69c06c;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .resource-btn:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .resource-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resources</h1>
+        <div class="button-container">
+            <button class="resource-btn" onclick="openResource('resource1')">Introduction to Graphology</button>
+            <button class="resource-btn" onclick="openResource('resource2')">Learn more about Alzheimer</button>
+            <button class="resource-btn" onclick="openResource('resource3')">Additional Help</button>
+            <button class = "resource-btn" onclick="homePage()" >Home</button>
+        </div>
+    </div>
+
+    <script>
+        function openResource(resourceName) {
+            // Add your resource URLs here
+            const resources = {
+                resource1: 'https://www.goodhousekeeping.com/life/g5057/handwriting-analysis/',
+                resource2: 'https://www.alz.org/',
+                resource3: 'https://www.leqembi.com/en/insurance-and-financial-support?utm_source=google&utm_medium=cpc&utm_campaign=Condition+Management%3BS%3BPH%3BBR%3BNER%3BCO%3BCO&utm_term=dementia+support&utm_content=UB+Condition+Management_Support_Phrase&gclsrc=aw.ds&&gclid=Cj0KCQiA8q--BhDiARIsAP9tKI2MxbEsN123lhzKADSQwjDonrlOABjbfFaWJsdwFRN7ugTmxEhg0y0aArJUEALw_wcB&gad_source=1',
+            };
+
+            if (resources[resourceName]) {
+                window.open(resources[resourceName], '_blank');
+            }
+        }
+        function homePage() {
+    window.location.href = 'BeeGreatV2.2.html';
+    //window.location.href = 'home2.html';  // Redirect to camera.html page
+ }
+    </script>
+</body>
+</html>

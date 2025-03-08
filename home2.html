@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeeGreat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&amp;display=swap"
+
+      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.1192.0/aws-sdk.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #F3EAD6;
+            
+        }
+        
+        input, textarea {
+            
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.1);
+            color: #000000;
+        }
+        input::placeholder, textarea::placeholder {
+            color: #999999;
+        }
+        input:focus::placeholder, textarea:focus::placeholder {
+            color: transparent;
+        }
+        button {
+            width: 50%;
+            padding: 10px;
+            background: #171715;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #333333;
+        }
+        .logoutButton {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 10px;
+            background: #171715;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .box {
+            left: 20px;
+            width: 200px;
+            height: 100px;
+            background-color: #6aa84fff;
+            border: 0.5px solid #595959;
+            padding: 10px;
+            margin: 10px;
+        }
+        .hidden { display: none; }
+        .wrapper { text-align: center; }
+        header { text-align: center; }
+        .banner { 
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%;  /* Make the banner stretch across the entire width of the screen */
+            background-color: rgb(220, 167, 132);
+            margin: 0 auto;
+            text-align: center;
+            height: 70px;
+            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+            padding-top: 10px;
+            
+            margin-bottom: 200px;
+           
+            
+     }
+
+     .emotions {
+        background-color: #f3f3f3;
+      }
+
+      .discussion, .camera, .resources {
+        background-color: #e6f0ff;
+      }
+     .bannerContent{
+        width: 100%;
+
+     }
+     .journal, .emotions, .discussion, .camera, .resources {
+
+        margin-top: 10px;
+        padding: 20px;
+        background-color: rgb(120, 194, 91);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .startPad{
+        margin-Bottom: 150px;
+        margin-top: 250px; 
+        
+      }
+     section {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    .container {
+        display: grid;
+        grid-template-columns: 2fr 2fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 10px;
+        padding: 50px;
+        max-width: 90%;
+        margin: 0 auto;
+        max-height: 70%;
+      }
+
+      .Settings{
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 5px;
+        padding: 50px;
+        max-width: 90%;
+        margin: 0 auto;
+        max-height: 70%;
+
+      }
+
+      .emotion-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(2, 1fr);   /* 2 rows */
+    gap: 1rem; /* Space between buttons */
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    justify-items: center; /* Center items in grid */
+    align-items: center;
+}
+        .emotion-button {
+            font-size: 2.5rem;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .emotion-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .emotion-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Emotion-specific colors */
+        .emotion-button[data-emotion="Angry"] { 
+            width: 50px;
+            height: 50px;
+            
+            background-color: #FF6B6B; }
+        .emotion-button[data-emotion="Tired"] { background-color: #6B7BFF; 
+            width: 50px;
+            height: 50px;}
+        .emotion-button[data-emotion="Happy"] { 
+            background-color: #FFD166;
+            width: 50px;
+            height: 50px;
+        
+        }
+        .emotion-button[data-emotion="Calm"] { background-color: #A8DADC; 
+            width: 50px;
+            height: 50px;}
+       
+        .emotion-button[data-emotion="Anxious"] { background-color: #FF9F6B; 
+            width: 50px;
+            height: 50px;}
+        
+        .emotion-button[data-emotion="Sad"] { background-color: #6B7BFF; 
+            width: 50px;
+            height: 50px;}
+        
+        #journal-entries {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+      #object2 {
+      width: 300px;
+      height: 300px;
+      float: right;
+    }
+        .entry {
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+  </head>
+  <body>
+    
+      <div class="banner">
+        <div class="bannerContent">
+
+          <h1>Welcome!</h1>
+        </div>
+      </div>
+      <div class = "startPad">
+      <div class="container">
+        
+        
+        
+
+        <!-- Discussion Section -->
+        <div class="discussion">
+          <h3>Discussion</h3>
+
+          <p>Placeholder for discussion content.</p>
+        </div>
+      </div>
+        <!-- Camera Section -->
+   
+          <div class="camera">
+            <h3>Camera</h3>
+            <button onclick="showCameraPage()">Go to Camera Page</button>
+          
+          </div>
+    
+     
+
+        <!-- Resources Section -->
+        <div class="resources">
+          <h3>Resources</h3>
+          <button onclick="showResources()">Go to Resource Page</button>
+        </div>
+        <div class="emotions">
+          <h3>Select Your Emotion</h3>
+            
+          <div class="emotion-container">
+            <button class="emotion-button" data-emotion="Happy" onclick="logEmotion('Happy')">
+                <img src="happy.png" alt="Happy" width="45px" height="45px">
+            </button>
+            <button class="emotion-button" data-emotion="Angry" onclick="logEmotion('Angry')">
+                <img src="angry.png" alt="Angry" width="45px" height="45px">
+            </button>
+            <button class="emotion-button" data-emotion="Sad" onclick="logEmotion('Sad')">
+                <img src="sad.png" alt="Sad" width="45px" height="45px">
+            </button>
+            <button class="emotion-button" data-emotion="Calm" onclick="logEmotion('Calm')">
+                <img src="calm.png" alt="Calm" width="45px" height="45px">
+            </button>
+            <button class="emotion-button" data-emotion="Anxious" onclick="logEmotion('Anxious')">
+                <img src="anxious.png" alt="Anxious" width="45px" height="45px">
+            </button>
+            <button class="emotion-button" data-emotion="Tired" onclick="logEmotion('Tired')">
+                <img src="tired.png" alt="Tired" width="45px" height="45px">
+            </button>
+        </div>
+        </div>
+        <!-- Journal Section -->
+         <div class = "wrapper">
+        <div class="journal">
+            <h3>Journal</h3>
+            <button onclick="showJournal()">Go to Past Journals</button>
+            <textarea id="journal-entry" placeholder="Write your journal entry..."></textarea>
+            <!-- File Upload Section -->
+        <h2>Upload a Handwritten Note</h2>
+        <input type="file" id="file-upload" accept="image/*">
+        <button onclick="uploadImage()">Upload</button>
+        <p id="upload-status"></p>
+        
+        <!-- Extracted Text -->
+        <h3>Extracted Text:</h3>
+        <pre id="extracted-text">No text extracted yet...</pre>
+            <button onclick="saveJournalEntry()">Save Journal Entry</button>
+          </div>
+        </div>
+      
+        <!--="" journal="" entry="" section=""--="">
+             <textarea id="journal-entry" placeholder="Write your journal entry..."></textarea>   
+                         <button onclick="saveJournalEntry()">Save Journal Entry</button>            
+                         <div id="journal-feedback"></div>            
+                         <br>            
+                         <button onclick="viewPastEntries()">View Past Entries</button>        
+                         -->
+       
+        <div class="logoutButton" onclick="logout()">Logout<logoutbutton> </logoutbutton></div>
+      </div>
+      <div class="hidden" id="view-entries-container">
+        <header>
+          <h2>Your Journal Entries</h2>
+        </header>
+        <div id="journal-entries"></div>
+        <br>
+        <button onclick="backToHomepage()">Back to Homepage</button> </div>
+      <script>
+
+function getQueryParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Get the user name from the query parameters
+    const userName = getQueryParameter('user');
+    
+    // Display the user's name in the header
+    if (userName) {
+      document.getElementById('user-name').textContent = userName;
+    }
+        // Toggle between login and signup forms
+        function toggleForms() {
+            document.getElementById('login-container').classList.toggle('hidden');
+            document.getElementById('signup-container').classList.toggle('hidden');
+        }
+
+        // Sign up function
+        function signup() {
+            let name = document.getElementById('signup-name').value.trim();
+            let email = document.getElementById('signup-email').value.trim();
+            let password = document.getElementById('signup-password').value.trim();
+
+            if (!name || !email || !password) {
+                alert('Please fill in all fields before signing up.');
+                return;
+            }
+
+            if (localStorage.getItem(email)) {
+                alert('Email already registered!');
+                return;
+            }
+
+            let user = { name, email, password };
+            localStorage.setItem(email, JSON.stringify(user));
+            alert('Sign-up successful! You can now log in.');
+            toggleForms();
+        }
+
+        // Login function
+        function login() {
+            let email = document.getElementById('login-email').value.trim();
+            let password = document.getElementById('login-password').value.trim();
+
+            let user = JSON.parse(localStorage.getItem(email));
+
+            if (user && user.password === password) {
+                alert('Login successful! Welcome, ' + user.name);
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('homepage-container').classList.remove('hidden');
+                document.getElementById('user-name').textContent = user.name;
+            } else {
+                alert('Invalid email or password!');
+            }
+        }
+
+        // Save journal entry function
+        function saveJournalEntry() {
+            let journalText = document.getElementById('journal-entry').value.trim();
+            if (journalText) {
+                let entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+                let entry = { text: journalText, date: new Date().toLocaleString() };
+                entries.push(entry);
+                localStorage.setItem('journalEntries', JSON.stringify(entries));
+                alert('Your journal entry has been saved.');
+                document.getElementById('journal-feedback').textContent = 'Entry saved!';
+                document.getElementById('journal-entry').value = '';  // Clear the textarea
+            } else {
+                document.getElementById('journal-feedback').textContent = 'Please write something before saving.';
+            }
+        }
+
+        // View past journal entries
+        function viewPastEntries() {
+            let entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+            let journalEntriesDiv = document.getElementById('journal-entries');
+            journalEntriesDiv.innerHTML = '';  // Clear any existing entries
+
+            if (entries.length === 0) {
+                journalEntriesDiv.innerHTML = '<p>No entries found.</p>';
+                return;
+            }
+
+            entries.forEach(entry => {
+                let entryDiv = document.createElement('div');
+                entryDiv.classList.add('entry');
+                entryDiv.innerHTML = `<p><strong>${entry.date}</strong></p><p>${entry.text}</p>`;
+                journalEntriesDiv.appendChild(entryDiv);
+            });
+
+            document.getElementById('homepage-container').classList.add('hidden');
+            document.getElementById('view-entries-container').classList.remove('hidden');
+        }
+
+        // Back to homepage
+        function backToHomepage() {
+            document.getElementById('view-entries-container').classList.add('hidden');
+            document.getElementById('homepage-container').classList.remove('hidden');
+        }
+
+        // Logout function
+        function logout() {
+            document.getElementById('homepage-container').classList.add('hidden');
+            document.getElementById('login-container').classList.remove('hidden');
+            alert('You have been logged out.');
+        }
+
+        // Clear all stored users
+        function clearAllUsers() {
+            localStorage.clear();
+            alert("All stored user data has been cleared.");
+        }
+        
+        // AWS S3 and Textract Integration
+        
+        AWS.config.update({
+    region: "us-east-1",
+    credentials: new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: "us-east-1:7bf2ba29-22ab-416e-8248-e02ff2b5501f" // Replace with actual ID
+    })
+});
+
+        var s3 = new AWS.S3();
+        var bucketName = "my-beegreat-buckets";
+
+        function uploadImage() {
+            let fileInput = document.getElementById("file-upload");
+            let file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file.");
+                return;
+            }
+
+            let fileName = "uploads/" + Date.now() + "_" + file.name;
+            let params = {
+                Bucket: bucketName,
+                Key: fileName,
+                Body: file,
+                ContentType: file.type
+            };
+
+            document.getElementById("upload-status").innerText = "Uploading...";
+            AWS.config.credentials.get(function(){
+
+// Credentials will be available when this function is called.
+var accessKeyId = AWS.config.credentials.accessKeyId;
+var secretAccessKey = AWS.config.credentials.secretAccessKey;
+var sessionToken = AWS.config.credentials.sessionToken;
+
+var bucketName = 'my-beegreat-buckets';
+
+var keyName = fileName;
+
+//var params = {Bucket: bucketName, Key: keyName, Body: 'Hello World!'};
+
+s3.putObject(params, function (err, data) {
+if (err)
+console.log(err)
+else
+console.log("Successfully uploaded data to " + bucketName + "/" + 
+keyName);
+});
+});
+
+            s3.upload(params, function(err, data) {
+                if (err) {
+                    document.getElementById("upload-status").innerText = "Upload failed!";
+                    console.error(err);
+                } else {
+                    document.getElementById("upload-status").innerText = "Uploaded! Extracting text...";
+                    triggerTextract(fileName);
+                }
+            });
+            
+        }
+
+        function triggerTextract(fileName) {
+            let outputFileUrl = `https://${bucketName}.s3.amazonaws.com/output/${fileName.replace(/\.(jpg|png)$/, ".txt")}`;
+
+            let checkInterval = setInterval(() => {
+                fetch(outputFileUrl)
+                    .then(response => {
+                        if (response.ok) {
+                            clearInterval(checkInterval);
+                            return response.text();
+                        }
+                        throw new Error("File not ready");
+                    })
+                    .then(refinedText => {
+                        document.getElementById("extracted-text").innerText = refinedText;
+                        document.getElementById("upload-status").innerText = "Text extracted!";
+                    })
+                    .catch(error => console.log("Waiting for file:", error));
+            }, 5000);
+        }
+
+        function showCameraPage() {
+    window.location.href = 'camera.html';  // Redirect to camera.html page
+  }
+  function showJournal() {
+    window.location.href = 'journal.html';  // Redirect to camera.html page
+  }
+  function showResources() {
+    window.location.href = 'resource.html';  // Redirect to camera.html page
+  }
+
+    </script>
+
+</body>
+</html>
+    </script> </div>
+  </body>
+</html>
