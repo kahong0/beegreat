@@ -379,20 +379,23 @@
 
         // Login function
         function login() {
-            let email = document.getElementById('login-email').value.trim();
-            let password = document.getElementById('login-password').value.trim();
+    let email = document.getElementById('login-email').value.trim();
+    let password = document.getElementById('login-password').value.trim();
 
-            let user = JSON.parse(localStorage.getItem(email));
+    let user = JSON.parse(localStorage.getItem(email));
 
-            if (user && user.password === password) {
-                alert('Login successful! Welcome, ' + user.name);
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('homepage-container').classList.remove('hidden');
-                document.getElementById('user-name').textContent = user.name;
-            } else {
-                alert('Invalid email or password!');
-            }
-        }
+    if (user && user.password === password) {
+        alert('Login successful! Welcome, ' + user.name);
+        document.getElementById('login-container').classList.add('hidden');
+        document.getElementById('homepage-container').classList.remove('hidden');
+        document.getElementById('user-name').textContent = user.name;
+
+        // Set a flag to remember the user is logged in
+        localStorage.setItem('loggedInEmail', email);
+    } else {
+        alert('Invalid email or password!');
+    }
+}
 
         // Save journal entry function
         function saveJournalEntry() {
@@ -437,14 +440,27 @@
             document.getElementById('view-entries-container').classList.add('hidden');
             document.getElementById('homepage-container').classList.remove('hidden');
         }
-
+        window.onload = function() {
+    let email = localStorage.getItem('loggedInEmail');
+    if (email) {
+        let user = JSON.parse(localStorage.getItem(email));
+        if (user) {
+            document.getElementById('login-container').classList.add('hidden');
+            document.getElementById('homepage-container').classList.remove('hidden');
+            document.getElementById('user-name').textContent = user.name;
+        }
+    } else {
+        document.getElementById('login-container').classList.remove('hidden');
+        document.getElementById('homepage-container').classList.add('hidden');
+    }
+};
         // Logout function
         function logout() {
-            document.getElementById('homepage-container').classList.add('hidden');
-            document.getElementById('login-container').classList.remove('hidden');
-            alert('You have been logged out.');
-        }
-
+    localStorage.removeItem('loggedInEmail');  // Remove login flag
+    document.getElementById('homepage-container').classList.add('hidden');
+    document.getElementById('login-container').classList.remove('hidden');
+    alert('You have been logged out.');
+}
         // Clear all stored users
         function clearAllUsers() {
             localStorage.clear();
