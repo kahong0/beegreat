@@ -76,7 +76,8 @@ h1 {
     border: 1px solid #d6a5a5;
     background-color: #fff5f5; 
     resize: none;
-}
+
+
 
     display: flex;
     flex-direction: column;
@@ -94,7 +95,7 @@ h1 {
 }
 
 .new-post button {
-    background-color: #a75f3a7;
+    background-color: #a75f3a;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -103,7 +104,7 @@ h1 {
 }
 
 .new-post button:hover {
-    background-color: #a75f3a7;
+    background-color: #a75f3a;
 }
 
 /* Posts & AI Messages */
